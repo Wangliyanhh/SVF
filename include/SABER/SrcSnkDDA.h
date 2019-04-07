@@ -85,6 +85,7 @@ public:
     /// Start analysis here
     virtual void analyze(SVFModule module);
    // virtual void analyze2(SVFModule module);
+   
     /// Initialize analysis
     virtual void initialize(SVFModule module) {
         ptaCallGraph = new PTACallGraph(module);
@@ -239,9 +240,12 @@ protected:
     inline bool isSatisfiableForPairs(ProgSlice* slice) {
         return slice->isSatisfiableForPairs();
     }
+<<<<<<< HEAD
     inline bool isUseAfterFree(ProgSlice* slice){
         return slice->isUseAfterFree();
     }
+=======
+>>>>>>> 206493694931caa8ff3133191e7a4dbb7832fd89
     //@}
     /// Whether it is all path reachable from a source
     virtual bool isAllPathReachable() {

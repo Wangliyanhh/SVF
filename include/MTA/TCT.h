@@ -318,6 +318,10 @@ private:
     u32_t TCTNodeNum;
     u32_t TCTEdgeNum;
     u32_t MaxCxtSize;
+<<<<<<< HEAD
+=======
+
+>>>>>>> 206493694931caa8ff3133191e7a4dbb7832fd89
     /// Add TCT node
     inline TCTNode* addTCTNode(const CxtThread& ct) {
         assert(ctpToNodeMap.find(ct)==ctpToNodeMap.end() && "Already has this node!!");
@@ -430,14 +434,11 @@ private:
         CxtThreadProc ctp = ctpList.pop();
         return ctp;
     }
-    inline void pushCxt(CallStrCxt& cxt, CallSiteID csId) {
         cxt.push_back(csId);
         if(cxt.size() > MaxCxtSize)
             MaxCxtSize = cxt.size();
     }
     inline bool isVisitedCTPs(const CxtThreadProc& ctp) const {
-        return visitedCTPs.find(ctp)!=visitedCTPs.end();
-    }
     //@}
     /// Clean up memory
     inline void destroy() {

@@ -62,7 +62,6 @@ void SrcSnkDDA::analyze(SVFModule module) {
         }
         else {
             DBOUT(DSaber, outs() << "Forward process for slice:" << (*iter)->getId() << " (size = " << getCurSlice()->getForwardSliceSize() << ")\n");
-        
             for (SVFGNodeSetIter sit = getCurSlice()->sinksBegin(), esit =
                         getCurSlice()->sinksEnd(); sit != esit; ++sit) {
                 ContextCond cxt;
