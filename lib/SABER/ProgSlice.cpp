@@ -132,6 +132,9 @@ bool ProgSlice::isUseAfterFree() {
             Condition* vfCond = NULL;
             const BasicBlock* nodeBB = getSVFGNodeBB(*it);
             const BasicBlock* succBB = getSVFGNodeBB(*sit);
+            if(nodeBB==succBB){
+                instit=nodeBB.begin()
+            }
             clearCFCond();
             vfCond = ComputeIntraVFGGuard(nodeBB,succBB);
             if(vfCond==getTrueCond()){
