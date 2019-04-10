@@ -31,6 +31,7 @@
 #include "SABER/SaberAnnotator.h"
 #include <llvm/Analysis/PostDominators.h>
 #include <llvm/IR/BasicBlock.h>
+#include <llvm/IR/DebugInfo.h>
 
 using namespace llvm;
 using namespace analysisUtil;
@@ -138,18 +139,19 @@ bool ProgSlice::isUseAfterFree() {
                 CallSite cs = dyn_cast<ActualParmSVFGNode>(*sit)->getCallSite();
                 const Instruction *sinst= dyn_cast<Instruction>(cs.getInstruction());
                 const Instruction *uinst= dyn_cast<StmtSVFGNode>(*it)->getInst();
-                for (BasicBlock::const_iterator I=nodeBB->begin(),EI=nodeBB->end();I!=EI;++I){
-                    if(*I == *uinst){
-                        vfCond=getTrueCond();
-                        break;
-                    }
-                    else if(*I == *sinst){
-                        vfCond=getFalseCond();
-                        break;
-                    }
-                    //errs()<<*I<<"\n";
+                
+                MDNode *N = sinst->getMetadata("dbg");
+                DILocation* sLoc = cast<DILocation>(N);                   // DILocation is in DebugInfo.h
+                unsigned sLine = sLoc->getLine();
 
+                MDNode *NN = uinst->getMetadata("dbg");
+                DILocation* uLoc = cast<DILocation>(NN);                   // DILocation is in DebugInfo.h
+                unsigned uLine = uLoc->getLine();
+
+                if(uLine>sLine){
+                    return false;
                 }
+                continue;
             }
             else{
                 vfCond = ComputeIntraVFGGuard(nodeBB,succBB);
