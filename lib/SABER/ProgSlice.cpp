@@ -132,11 +132,26 @@ bool ProgSlice::isUseAfterFree() {
             Condition* vfCond = NULL;
             const BasicBlock* nodeBB = getSVFGNodeBB(*it);
             const BasicBlock* succBB = getSVFGNodeBB(*sit);
-            if(nodeBB==succBB){
-                instit=nodeBB.begin()
-            }
             clearCFCond();
-            vfCond = ComputeIntraVFGGuard(nodeBB,succBB);
+            if(nodeBB==succBB){
+                CallSite cs = (*sit).getCallSite();
+                Instruction sinst=cs.getInstruction();
+                Instruction uinst=(*it).getInst();
+                for (Instruction &I : nodeBB){
+                    if(I==uinit){
+                        vfCond=getTrueCond();
+                        break;
+                    }
+                    else if(I==sinst){
+                        vfCond=getFalseCond();
+                        break;
+                    }
+
+                }
+            }
+            else{
+                vfCond = ComputeIntraVFGGuard(nodeBB,succBB);
+            }
             if(vfCond==getTrueCond()){
                 continue;
             }

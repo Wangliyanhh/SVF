@@ -137,6 +137,9 @@ public:
     bool isSatisfiableForPairs();
     bool isUseAfterFree();
 
+    /// Get llvm value from a SVFGNode
+    const llvm::Value* getLLVMValue(const SVFGNode* node) const;
+
     /// Get callsite ID and get returnsiteID from SVFGEdge
     //@{
     llvm::CallSite getCallSite(const SVFGEdge* edge) const;
