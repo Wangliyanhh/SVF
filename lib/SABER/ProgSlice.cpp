@@ -30,10 +30,11 @@
 #include "SABER/ProgSlice.h"
 #include "SABER/SaberAnnotator.h"
 #include <llvm/Analysis/PostDominators.h>
+#include <llvm/IR/BasicBlock.h>
 
 using namespace llvm;
 using namespace analysisUtil;
-
+//using namespace BasicBlock;
 /*!
  * Compute path conditions for nodes on the backward slice
  * path condition of each node is calculated starting from root node (source)
@@ -134,18 +135,19 @@ bool ProgSlice::isUseAfterFree() {
             const BasicBlock* succBB = getSVFGNodeBB(*sit);
             clearCFCond();
             if(nodeBB==succBB){
-                CallSite cs = (*sit).getCallSite();
-                Instruction sinst=cs.getInstruction();
-                Instruction uinst=(*it).getInst();
-                for (Instruction &I : nodeBB){
-                    if(I==uinit){
+                CallSite cs = dyn_cast<ActualParmSVFGNode>(*sit)->getCallSite();
+                const Instruction *sinst= dyn_cast<Instruction>(cs.getInstruction());
+                const Instruction *uinst= dyn_cast<StmtSVFGNode>(*it)->getInst();
+                for (BasicBlock::const_iterator I=nodeBB->begin(),EI=nodeBB->end();I!=EI;++I){
+                    if(*I == *uinst){
                         vfCond=getTrueCond();
                         break;
                     }
-                    else if(I==sinst){
+                    else if(*I == *sinst){
                         vfCond=getFalseCond();
                         break;
                     }
+                    //errs()<<*I<<"\n";
 
                 }
             }
