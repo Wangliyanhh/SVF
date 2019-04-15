@@ -153,9 +153,14 @@ bool ProgSlice::isUseAfterFree() {
                 }
                 continue;
             }
-            else{
+            else if(nodeBB->getParent()==succBB->getParent()){
                 vfCond = ComputeIntraVFGGuard(nodeBB,succBB);
             }
+            /*else{
+                Condition* vfCond1 = ComputeInterCallVFGGuard(nodeBB,succBB,nodeBB->getParent());
+                Condition* vfCond2 = ComputeInterRetVFGGuard(nodeBB,succBB,nodeBB->getParent());
+                vfCond = condOr(vfCond1,vfCond2);
+            }*/
             if(vfCond==getTrueCond()){
                 continue;
             }

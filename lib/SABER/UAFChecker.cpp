@@ -34,5 +34,4 @@ void UAFChecker::reportBug(ProgSlice* slice) {
         errs() << "\t\t Use after free path: \n" << slice->evalFinalCond() << "\n";
         slice->annotatePaths();
     }
-    errs() <<"test if run\n";
 }

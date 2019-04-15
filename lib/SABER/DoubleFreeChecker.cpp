@@ -50,8 +50,6 @@ void DoubleFreeChecker::reportBug(ProgSlice* slice) {
         errs() << "\t\t double free path: \n" << slice->evalFinalCond() << "\n";
         slice->annotatePaths();
     }
-    //add errs
-    errs() << "i run\n";
 
 }
 
