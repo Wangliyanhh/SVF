@@ -32,6 +32,7 @@
 #include <llvm/Analysis/PostDominators.h>
 #include <llvm/IR/BasicBlock.h>
 #include <llvm/IR/DebugInfo.h>
+#include "Util/PTACallGraph.h"
 
 using namespace llvm;
 using namespace analysisUtil;
@@ -131,7 +132,7 @@ bool ProgSlice::isUseAfterFree() {
                     if((*it)->getNodeKind()!=4)
                         continue;
             
-            Condition* vfCond = NULL;
+            Condition* vfCond = getFalseCond(); 
             const BasicBlock* nodeBB = getSVFGNodeBB(*it);
             const BasicBlock* succBB = getSVFGNodeBB(*sit);
             clearCFCond();
@@ -156,11 +157,18 @@ bool ProgSlice::isUseAfterFree() {
             else if(nodeBB->getParent()==succBB->getParent()){
                 vfCond = ComputeIntraVFGGuard(nodeBB,succBB);
             }
-            /*else{
-                Condition* vfCond1 = ComputeInterCallVFGGuard(nodeBB,succBB,nodeBB->getParent());
-                Condition* vfCond2 = ComputeInterRetVFGGuard(nodeBB,succBB,nodeBB->getParent());
-                vfCond = condOr(vfCond1,vfCond2);
-            }*/
+            else{
+                PTACallGraphNode* sCN = getCallGraphNode(succBB->getParent());
+                PTACallGraphNode* uCN = getCallGraphNode(nodeBB->getParent());
+                if(PTACallGraphEdge* edge = hasGraphEdge(sCN,uCN,PTACallGraph::CallRetEdge)){
+                    PTACallGraph::CallInstSet::iterator callinst = edge->directCallsBegin();
+                    Condition* vfCond = ComputeInterCallVFGGuard(succBB,nodeBB,(*callinst)->getParent());
+                }
+                else if(PTACallGraphEdge* edge = hasGraphEdge(uCN,sCN,PTACallGraph::CallRetEdge)){
+                    PTACallGraph::CallInstSet::iterator callinst = edge->directCallsBegin();
+                    Condition* vfCond = ComputeInterCallVFGGuard(nodeBB,succBB,(*callinst)->getParent());
+                }
+            }
             if(vfCond==getTrueCond()){
                 continue;
             }
