@@ -152,6 +152,8 @@ bool ProgSlice::isUseAfterFree() {
                 unsigned uLine = uLoc->getLine();
 
                 if(uLine>sLine){
+                    setsNode(*sit);
+                    setuNode(*it);
                     return false;
                 }
                 continue;
@@ -165,6 +167,8 @@ bool ProgSlice::isUseAfterFree() {
             Condition* guard = condAnd(getVFCond(*sit), getVFCond(*it));
             if(guard != getFalseCond()) {
                 setFinalCond(guard);
+                setsNode(*sit);
+                setuNode(*it);
                 return false;
             }
         }

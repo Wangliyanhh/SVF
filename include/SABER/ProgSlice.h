@@ -66,6 +66,7 @@ public:
     inline u32_t getBackwardSliceSize() const {
         return backwardslice.size();
     }
+
     /// Forward and backward slice operations
     //@{
     inline void addToForwardSlice(const SVFGNode* node) {
@@ -96,6 +97,12 @@ public:
 
     /// root and sink operations
     //@{
+    inline const SVFGNode* getSNode() const {
+        return sNode;
+    }
+    inline const SVFGNode* getUNode() const {
+        return uNode;
+    }
     inline const SVFGNode* getSource() const {
         return root;
     }
@@ -247,6 +254,14 @@ private:
         _curSVFGNode = node;
         pathAllocator->setCurEvalVal(getLLVMValue(_curSVFGNode));
     }
+
+    inline void setsNode(const SVFGNode* node){
+        sNode = node;
+    }
+
+    inline void setuNode(const SVFGNode* node){
+        uNode = node;
+    }
     //@}
     /// Set final condition after all path reachability analysis
 
@@ -264,6 +279,8 @@ private:
     const SVFGNode* _curSVFGNode;			///<  current svfg node during guard computation
     Condition* finalCond;					///<  final condition
     const SVFG* svfg;						///<  SVFG
+    const SVFGNode* sNode;
+    const SVFGNode* uNode;
 };
 
 
