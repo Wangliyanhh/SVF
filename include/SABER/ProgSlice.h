@@ -173,6 +173,22 @@ public:
     /// Annotate program according to final condition
     void annotatePaths();
 
+    inline Condition* getVFCond(const SVFGNode* node) const {
+        SVFGNodeToCondMap::const_iterator it = svfgNodeToCondMap.find(node);
+        if(it==svfgNodeToCondMap.end()) {
+            return getFalseCond();
+        }
+        return it->second;
+    }
+
+    inline void setFinalCond(Condition* cond) {
+        finalCond = cond;
+    }
+
+    inline const SVFGNode* getCurSVFGNode() const {
+        return _curSVFGNode;
+    }
+
 private:
     inline const SVFG* getSVFG() const {
         return svfg;
@@ -188,13 +204,7 @@ private:
 
     /// Get/set VF (value-flow) and CF (control-flow) conditions
     //@{
-    inline Condition* getVFCond(const SVFGNode* node) const {
-        SVFGNodeToCondMap::const_iterator it = svfgNodeToCondMap.find(node);
-        if(it==svfgNodeToCondMap.end()) {
-            return getFalseCond();
-        }
-        return it->second;
-    }
+
     inline bool setVFCond(const SVFGNode* node, Condition* cond) {
         SVFGNodeToCondMap::iterator it = svfgNodeToCondMap.find(node);
         if(it!=svfgNodeToCondMap.end() && it->second == cond)
@@ -232,18 +242,14 @@ private:
 
     /// Get/set current SVFG node
     //@{
-    inline const SVFGNode* getCurSVFGNode() const {
-        return _curSVFGNode;
-    }
+    
     inline void setCurSVFGNode(const SVFGNode* node) {
         _curSVFGNode = node;
         pathAllocator->setCurEvalVal(getLLVMValue(_curSVFGNode));
     }
     //@}
     /// Set final condition after all path reachability analysis
-    inline void setFinalCond(Condition* cond) {
-        finalCond = cond;
-    }
+
 
 private:
     SVFGNodeSet forwardslice;				///<  the forward slice

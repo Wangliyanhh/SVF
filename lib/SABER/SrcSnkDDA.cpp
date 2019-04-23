@@ -31,6 +31,8 @@
 #include "SABER/SrcSnkDDA.h"
 #include "MSSA/SVFGStat.h"
 #include "Util/GraphUtil.h"
+#include <llvm/IR/BasicBlock.h>
+#include <llvm/IR/DebugInfo.h>
 
 using namespace llvm;
 
@@ -81,6 +83,9 @@ void SrcSnkDDA::analyze(SVFModule module) {
 
     finalize();
 }
+
+
+
 /*
 void SrcSnkDDA::analyze2(SVFModule module) {
 

@@ -59,7 +59,7 @@ void ProgSlice::AllPathReachableSolve() {
         for(SVFGNode::const_iterator it = node->OutEdgeBegin(), eit = node->OutEdgeEnd(); it!=eit; ++it) {
             const SVFGEdge* edge = (*it);
             const SVFGNode* succ = edge->getDstNode();
-            if(inBackwardSlice(succ)) {
+            //if(inBackwardSlice(succ)) {
                 Condition* vfCond = NULL;
                 const BasicBlock* nodeBB = getSVFGNodeBB(node);
                 const BasicBlock* succBB = getSVFGNodeBB(succ);
@@ -78,7 +78,7 @@ void ProgSlice::AllPathReachableSolve() {
                 Condition* succPathCond = condAnd(cond, vfCond);
                 if(setVFCond(succ,  condOr(getVFCond(succ), succPathCond) ))
                     worklist.push(succ);
-            }
+            //}
 
             DBOUT(DSaber, outs() << " node (" << node->getId() << ":" << node->getBB()->getName() <<
                   ") --> " << "succ (" << succ->getId() << ":" << succ->getBB()->getName() << ") condition: " << getVFCond(succ) << "\n");
@@ -112,6 +112,7 @@ bool ProgSlice::isSatisfiableForPairs() {
                 Condition* guard = condAnd(getVFCond(*sit),getVFCond(*it));
                 if(guard != getFalseCond()) {
                     setFinalCond(guard);
+                    setCurSVFGNode(*sit);
                     return false;
                 }
             }        
@@ -122,7 +123,7 @@ bool ProgSlice::isSatisfiableForPairs() {
 }
 
 
-//add function
+//add functi
 bool ProgSlice::isUseAfterFree() {
     for(SVFGNodeSetIter sit = sinksBegin(), esit = sinksEnd(); sit!=esit; ++sit) {
         Condition* guard = NULL;
@@ -130,11 +131,12 @@ bool ProgSlice::isUseAfterFree() {
             if((*it)->getNodeKind()!=1)
                 if((*it)->getNodeKind()!=3)
                     if((*it)->getNodeKind()!=4)
-                        continue;
-            
+                        if((*it)->getNodeKind()!=12)            
+                            continue;
+            if(inBackwardSlice(*it)) continue;
             Condition* vfCond = getFalseCond(); 
-            const BasicBlock* nodeBB = getSVFGNodeBB(*it);
-            const BasicBlock* succBB = getSVFGNodeBB(*sit);
+            const BasicBlock* nodeBB = (*it)->getBB();
+            const BasicBlock* succBB = (*sit)->getBB();
             clearCFCond();
             if(nodeBB==succBB){
                 CallSite cs = dyn_cast<ActualParmSVFGNode>(*sit)->getCallSite();
@@ -157,22 +159,10 @@ bool ProgSlice::isUseAfterFree() {
             else if(nodeBB->getParent()==succBB->getParent()){
                 vfCond = ComputeIntraVFGGuard(nodeBB,succBB);
             }
-            else{
-                PTACallGraphNode* sCN = getCallGraphNode(succBB->getParent());
-                PTACallGraphNode* uCN = getCallGraphNode(nodeBB->getParent());
-                if(PTACallGraphEdge* edge = hasGraphEdge(sCN,uCN,PTACallGraph::CallRetEdge)){
-                    PTACallGraph::CallInstSet::iterator callinst = edge->directCallsBegin();
-                    Condition* vfCond = ComputeInterCallVFGGuard(succBB,nodeBB,(*callinst)->getParent());
-                }
-                else if(PTACallGraphEdge* edge = hasGraphEdge(uCN,sCN,PTACallGraph::CallRetEdge)){
-                    PTACallGraph::CallInstSet::iterator callinst = edge->directCallsBegin();
-                    Condition* vfCond = ComputeInterCallVFGGuard(nodeBB,succBB,(*callinst)->getParent());
-                }
-            }
             if(vfCond==getTrueCond()){
                 continue;
             }
-            Condition* guard = condAnd(getVFCond(*sit),getVFCond(*it));
+            Condition* guard = condAnd(getVFCond(*sit), getVFCond(*it));
             if(guard != getFalseCond()) {
                 setFinalCond(guard);
                 return false;

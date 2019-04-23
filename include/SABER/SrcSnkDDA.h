@@ -240,6 +240,13 @@ protected:
     inline bool isSatisfiableForPairs(ProgSlice* slice) {
         return slice->isSatisfiableForPairs();
     }
+    /*inline ProgSlice::Condition* getFalseCond() const{
+        return _curSlice->getFalseCond();
+    }
+    inline ProgSlice::Condition* getTrueCond() const{
+        return _curSlice->getTrueCond();
+    }*/
+
     inline bool isUseAfterFree(ProgSlice* slice){
         return slice->isUseAfterFree();
     }
