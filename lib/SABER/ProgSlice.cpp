@@ -112,6 +112,7 @@ bool ProgSlice::isSatisfiableForPairs() {
                 Condition* guard = condAnd(getVFCond(*sit),getVFCond(*it));
                 if(guard != getFalseCond()) {
                     setFinalCond(guard);
+                    setsNode(*it);
                     setCurSVFGNode(*sit);
                     return false;
                 }

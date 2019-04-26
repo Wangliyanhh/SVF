@@ -47,9 +47,12 @@ void DoubleFreeChecker::reportBug(ProgSlice* slice) {
         CallSite cs = getSrcCSID(src);
         errs() << bugMsg2("\t Double Free :") <<  " memory allocation at : ("
                << getSourceLoc(cs.getInstruction()) << ")\n";
-        const SVFGNode* node = slice->getCurSVFGNode();
+        const SVFGNode* node = slice->getSNode();
         CallSite cs2 = dyn_cast<ActualParmSVFGNode>(node)->getCallSite();
-        errs() << "\t\t Double Free Location at : (" << getSourceLoc(cs2.getInstruction()) << ")\n";       
+        errs() << "\t\t First Free Location at : (" << getSourceLoc(cs2.getInstruction()) << ")\n";
+        const SVFGNode* node2 = slice->getCurSVFGNode();
+        CallSite cs3 = dyn_cast<ActualParmSVFGNode>(node2)->getCallSite();
+        errs() << "\t\t Double Free Location at : (" << getSourceLoc(cs3.getInstruction()) << ")\n";       
         errs() << "\t\t double free path: \n" << slice->evalFinalCond() << "\n";
         slice->annotatePaths();
     }
