@@ -84,7 +84,7 @@ public:
 
     /// Start analysis here
     virtual void analyze(SVFModule module);
-   // virtual void analyze2(SVFModule module);
+
    
     /// Initialize analysis
     virtual void initialize(SVFModule module) {
@@ -102,7 +102,9 @@ public:
 
     /// Finalize analysis
     virtual void finalize() {
+        svfg->dump("Saber_SVFG_WithErr",true);
         dumpSlices();
+
     }
 
     /// Get SVFG

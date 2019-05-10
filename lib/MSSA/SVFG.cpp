@@ -1084,6 +1084,11 @@ struct DOTGraphTraits<SVFG*> : public DOTGraphTraits<PAG*> {
         std::string str;
         raw_string_ostream rawstr(str);
 
+        if (node->isfake()){
+            rawstr <<  "color=pink,style=filled, fillcolor=pink";
+            return rawstr.str();
+        }
+
         if(StmtSVFGNode* stmtNode = dyn_cast<StmtSVFGNode>(node)) {
             const PAGEdge* edge = stmtNode->getPAGEdge();
             if (isa<AddrPE>(edge)) {

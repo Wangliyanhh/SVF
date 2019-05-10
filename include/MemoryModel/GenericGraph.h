@@ -336,7 +336,7 @@ public:
     }
 
     /// Get a node
-    inline NodeType* getGNode(NodeID id) const {
+    inline NodeType* getGNode(NodeID id) const{
         const_iterator it = IDToNodeMap.find(id);
         assert(it != IDToNodeMap.end() && "Node not found!");
         return it->second;

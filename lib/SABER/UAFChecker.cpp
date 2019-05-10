@@ -28,9 +28,12 @@ void UAFChecker::reportUAF(const SVFGNode* src) {
 void UAFChecker::reportBug(ProgSlice* slice) {
     if(isUseAfterFree(slice) == false){
         const SVFGNode* src = slice->getSource();
+        CallSite cs = getSrcCSID(src);
+        (slice->getSNode())->setfake();
+        (slice->getUNode())->setfake();
         CallSite cs2 = dyn_cast<ActualParmSVFGNode>(slice->getSNode())->getCallSite();    
         const Instruction *uinst= dyn_cast<StmtSVFGNode>(slice->getUNode())->getInst();
-        CallSite cs = getSrcCSID(src);
+        
         errs() << bugMsg2("\t Use Afree Free :") <<  " memory allocation at : ("
                << getSourceLoc(cs.getInstruction()) << ")\n";
         errs() << "\t\t free location: (" << getSourceLoc(cs2.getInstruction()) << ")\n";

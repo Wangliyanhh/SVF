@@ -54,6 +54,8 @@ void DoubleFreeChecker::reportBug(ProgSlice* slice) {
         CallSite cs3 = dyn_cast<ActualParmSVFGNode>(node2)->getCallSite();
         errs() << "\t\t Double Free Location at : (" << getSourceLoc(cs3.getInstruction()) << ")\n";       
         errs() << "\t\t double free path: \n" << slice->evalFinalCond() << "\n";
+        (slice->getSNode())->setfake();
+        (slice->getCurSVFGNode())->setfake();
         slice->annotatePaths();
     }
 

@@ -58,13 +58,20 @@ public:
 public:
     /// Constructor
     SVFGNode(NodeID i, SVFGNodeK k): GenericSVFGNodeTy(i,k), bb(NULL) {
-
+        fake = false;
     }
     /// We should know the program location (basic block level) of each SVFG node
     virtual const llvm::BasicBlock* getBB() const {
         return bb;
     }
 
+    void setfake(){
+        fake = true;
+    }
+
+    bool isfake(){
+        return fake;
+    }
     /// Overloading operator << for dumping SVFG node ID
     //@{
     friend llvm::raw_ostream& operator<< (llvm::raw_ostream &o, const SVFGNode &node) {
@@ -74,6 +81,7 @@ public:
     //@}
 protected:
     const llvm::BasicBlock* bb;
+    bool fake;
 };
 
 

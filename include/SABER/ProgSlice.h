@@ -81,10 +81,10 @@ public:
     inline bool inBackwardSlice(const SVFGNode* node) {
         return backwardslice.find(node)!=backwardslice.end();
     }
-    inline SVFGNodeSetIter forwardSliceBegin() const {
+    inline SVFGNodeSetIter forwardSliceBegin()  {
         return forwardslice.begin();
     }
-    inline SVFGNodeSetIter forwardSliceEnd() const {
+    inline SVFGNodeSetIter forwardSliceEnd()  {
         return forwardslice.end();
     }
     inline SVFGNodeSetIter backwardSliceBegin() const {
@@ -97,10 +97,10 @@ public:
 
     /// root and sink operations
     //@{
-    inline const SVFGNode* getSNode() const {
+    inline  SVFGNode* getSNode() const {
         return sNode;
     }
-    inline const SVFGNode* getUNode() const {
+    inline  SVFGNode* getUNode() const {
         return uNode;
     }
     inline const SVFGNode* getSource() const {
@@ -112,10 +112,10 @@ public:
     inline const SVFGNodeSet& getSinks() const {
         return sinks;
     }
-    inline SVFGNodeSetIter sinksBegin() const {
+    inline SVFGNodeSetIter sinksBegin()  {
         return sinks.begin();
     }
-    inline SVFGNodeSetIter sinksEnd() const {
+    inline SVFGNodeSetIter sinksEnd()  {
         return sinks.end();
     }
     inline void setPartialReachable() {
@@ -192,7 +192,7 @@ public:
         finalCond = cond;
     }
 
-    inline const SVFGNode* getCurSVFGNode() const {
+    inline SVFGNode* getCurSVFGNode() {
         return _curSVFGNode;
     }
 
@@ -251,16 +251,16 @@ private:
     //@{
     
     inline void setCurSVFGNode(const SVFGNode* node) {
-        _curSVFGNode = node;
+        _curSVFGNode = const_cast<SVFGNode*>(node);
         pathAllocator->setCurEvalVal(getLLVMValue(_curSVFGNode));
     }
 
     inline void setsNode(const SVFGNode* node){
-        sNode = node;
+        sNode = const_cast<SVFGNode*>(node);
     }
 
     inline void setuNode(const SVFGNode* node){
-        uNode = node;
+        uNode = const_cast<SVFGNode*>(node);
     }
     //@}
     /// Set final condition after all path reachability analysis
@@ -276,11 +276,11 @@ private:
     bool fullReachable;						///<  reachable from all paths
     bool reachGlob;							///<  Whether slice reach a global
     PathCondAllocator* pathAllocator;		///<  path condition allocator
-    const SVFGNode* _curSVFGNode;			///<  current svfg node during guard computation
+    SVFGNode* _curSVFGNode;			///<  current svfg node during guard computation
     Condition* finalCond;					///<  final condition
     const SVFG* svfg;						///<  SVFG
-    const SVFGNode* sNode;
-    const SVFGNode* uNode;
+    SVFGNode* sNode;
+    SVFGNode* uNode;
 };
 
 
